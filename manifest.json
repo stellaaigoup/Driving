@@ -1,0 +1,13 @@
+{
+  "name": "드라이브 트래커",
+  "short_name": "드라이브",
+  "description": "차량 이동거리 기록 앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#185FA5",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
