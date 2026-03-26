@@ -208,10 +208,29 @@
   }
 
   function onGPS(p){
-    const {latitude:a,longitude:o}=p.coords;
-    if(lastP&&!lastP.sim){ const d=haversine(lastP.a,lastP.o,a,o); if(d>.003){dist+=d;updateDist(d);} }
-    lastP={a,o,sim:false}; pts.push({a,o}); drawPath();
+  // 정확도가 20m 이상이면 무시
+  if(p.coords.accuracy > 20) return;
+
+  const {latitude:a, longitude:o} = p.coords;
+  if(lastP && !lastP.sim){
+    const d = haversine(lastP.a, lastP.o, a, o);
+    // 5m 미만 이동은 GPS 노이즈로 간주하고 무시
+    if(d < 0.005) return;
+    // 시속 200km 초과는 오류값으로 무시
+    const dt = (Date.now() - lastP.ts) / 3600000;
+    if(dt > 0 && d/dt > 200) return;
+    dist += d;
+    updateDist(d);
   }
+  lastP = {a, o, sim:false, ts:Date.now()};
+  pts.push({a, o});
+  drawPath();
+}
+//   function onGPS(p){
+//     const {latitude:a,longitude:o}=p.coords;
+//     if(lastP&&!lastP.sim){ const d=haversine(lastP.a,lastP.o,a,o); if(d>.003){dist+=d;updateDist(d);} }
+//     lastP={a,o,sim:false}; pts.push({a,o}); drawPath();
+//   }
 
   function updateDist(delta){
     document.getElementById('distNow').innerHTML=dist.toFixed(2)+'<span class="big-unit"> km</span>';
